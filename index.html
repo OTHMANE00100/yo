@@ -1,13 +1,382 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your company's marketing website">
+    <title>Marketing Site</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 3;
+        }
+
+        header h1 {
+            margin: 0;
+            display: inline-block;
+        }
+
+        nav {
+            float: right;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            background: url('flowers.jpg') no-repeat center center/cover;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        .hero .content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero .btn {
+            background: #00aaff;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        section {
+            padding: 4rem 0;
+            position: relative;
+            z-index: 2;
+            background: #fff;
+        }
+
+        .about, .services, .contact, .external-link, .buy {
+            background: #fff;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .services .service-item {
+            background: #f9f9f9;
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .services .service-item:hover {
+            transform: translateY(-10px);
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            margin-top: 10px;
+        }
+
+        form input, form textarea {
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        form button {
+            margin-top: 10px;
+            padding: 10px;
+            background: #00aaff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 1;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 4;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 10px;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Back to Top Button */
+        #backToTop {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 4;
+            border: none;
+            outline: none;
+            background-color: #00aaff;
+            color: white;
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+        }
+
+        #backToTop:hover {
+            background-color: #555;
+        }
+    </style>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init("EthQzH2y-nMGsWVXn"); // public key
+        })();
+
+        function sendEmail(event) {
+            event.preventDefault();
+            const form = event.target;
+            emailjs.sendForm('service_9ajrjqq', 'template_h4temsr', form)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert('Your message has been sent!');
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert('Failed to send the message. Please try again later.');
+                });
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Market Space</h1>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#external-link">Link</a></li>
+                    <li><a href="#buy">Buy</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "EthQzH2y-nMGsWVXn",
+      });
+   })();
+</script>
+    <video autoplay muted loop id="bgvideo">
+        <source src="OOO.mp4" type="video/mp4">
+    </video>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="content">
+                <h2>Welcome to Your Home Market</h2>
+                <p>Discover our services and how we can help you grow your business.</p>
+                <a href="#services" class="btn">Learn More</a>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <h2>About Us</h2>
+                <p>We are a leading marketing agency with years of experience.</p>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <div class="container">
+                <h2>Our Products</h2>
+                <div class="service-item">
+                    <h3>Product One</h3>
+                     <img src="piccc1.jpg" alt="Product One Image" style="width: 300px; height: auto;">
+                    <img src="picccc4.jpg" alt="Product One Image" style="width: 200px; height: auto;">
+                    <img src="picccc3.jpg" alt="Product One Image" style="width: 300px; height: auto;">
+                     <img src="picccc2.jpg" alt="Product One Image" style="width: 300px; height: auto;">
+                    <p>
+                        Lenovo ThinkPad
+Caractéristiques principales
+       </p>
+       <p>             
+Processeur: Intel Core i3 11ème génération (i3v11)
+</p>
+     <p>                
+Performances optimisées pour les tâches quotidiennes
+Idéal pour le multitâche et les applications bureautiques
+Écran Anti-éblouissement (Antiglare Display)
+</p>
+      <p>                  
+
+Connectivité Wi-Fi Haute Vitesse (High Speed WiFi)
+</p>
+       <p>                
+
+Stockage SSD de 256 Go
+</p>
+   <p>                 
+Vitesse de démarrage rapide et temps de chargement réduits pour les applications
+Stockage fiable et durable pour tous vos fichiers et données
+Avantages
+Performance et Réactivité
+</p>
+                    <p>
+Le processeur Intel Core i3 de 11ème génération assure une exécution fluide des tâches courantes.
+              </p>
+                    <p>
+Le SSD de 256 Go améliore la rapidité de l’ordinateur,
+</p>
+       <p>             
+L’écran anti-éblouissement est idéal pour une utilisation prolongée, réduisant la fatigue oculaire.
+
+</p>
+                    <p>
+Grâce au Wi-Fi haute vitesse, vous pouvez rester connecté partout où vous allez.
+Idéal pour les professionnels en déplacement et les étudiants nécessitant une connexion internet fiable.
+.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="buy" class="buy">
+            <div class="container">
+                <h2>contact</h2>
+                <form id="buyForm" onsubmit="sendEmail(event)">
+                    <label for="name">name</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="email">phone number</label>
+                    <input type="phone number" id="phone number" name="phone number" required>
+                    <label for="product">product</label>
+                    <input type="product" id="product" name="product" required>
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Your Company. All rights reserved.</p>
+    </footer>
+</body>
 </html>
+
